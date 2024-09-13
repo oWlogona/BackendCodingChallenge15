@@ -1,7 +1,7 @@
 import os
 
 from services import DirectoryManager
-
+from loguru import logger
 
 class FileManger:
     """
@@ -30,7 +30,7 @@ class FileManger:
             bool: True if the file exists, False otherwise. If the file does not exist, a message is printed.
         """
         if not os.path.isfile(self.file_path):
-            print(f"File not found: {self.file_path}")
+            logger.warning(f"File not found: {self.file_path}")
             return False
         return True
 
