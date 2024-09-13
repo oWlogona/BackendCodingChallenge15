@@ -1,7 +1,9 @@
 import os
 
-from services import DirectoryManager
 from loguru import logger
+
+from services import DirectoryManager
+
 
 class FileManger:
     """
