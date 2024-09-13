@@ -41,6 +41,33 @@ def directory_manager():
     return dm
 
 
+def test_add_folder(directory_manager):
+    with patch.object(DirectoryManager, "_create_new_folder") as mock_create:
+        directory_manager._add_folder("/fruits/apple")
+        mock_create.assert_called_once_with(
+            depth=1, folder_name="apple", parent_folder_name="fruits"
+        )
+
+
+def test_create_new_folder_root(directory_manager):
+    with patch("uuid.uuid4", return_value="1234"):
+        directory_manager._create_new_folder(depth=0, folder_name="fruits")
+        assert "1234" in directory_manager.directory[0]
+        assert directory_manager.directory[0]["1234"] == {
+            "name": "fruits",
+            "parent_id": None,
+        }
+
+
+def test_add_folder_invalid_path(directory_manager):
+    directory_manager.directory = {}
+    with patch("builtins.print") as mocked_print:
+        directory_manager._add_folder("/nonexistent/apple")
+        mocked_print.assert_any_call(
+            "ERROR CREATING: nonexistent doesn't exist on parent level"
+        )
+
+
 def test_draw_directory(directory_manager):
     expected_output = "foods\n" " grains\n" " fruits\n" " vegetables\n" "  squash\n"
 
