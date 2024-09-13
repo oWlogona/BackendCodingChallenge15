@@ -109,7 +109,7 @@ class DirectoryManager:
                     "parent_id": parent_id,
                 }
             else:
-                logger.info(
+                logger.warning(
                     f"ERROR CREATING: {parent_folder_name} doesn't exist on parent level"
                 )
 

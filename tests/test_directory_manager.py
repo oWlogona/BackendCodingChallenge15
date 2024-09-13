@@ -1,4 +1,3 @@
-from io import StringIO
 from unittest.mock import patch
 
 import pytest
@@ -30,7 +29,7 @@ def directory_manager():
         2: {
             "de54de84-83e0-48ae-b3ac-ecd760229c81": {
                 "name": "fuji",
-                "parent_id": "fe9fe360-9318-40ca-8b2e-11affd859939",
+                "parent_id": "528c32f8-f5fc-4862-bbb8-3798c8e74a7c",
             },
             "8f04f1e9-922b-4ba5-bb44-fbc54035260a": {
                 "name": "squash",
@@ -61,34 +60,46 @@ def test_create_new_folder_root(directory_manager):
 
 def test_add_folder_invalid_path(directory_manager):
     directory_manager.directory = {}
-    with patch("builtins.print") as mocked_print:
+    with patch("loguru.logger.warning") as mocked_warning:
         directory_manager._add_folder("/nonexistent/apple")
-        mocked_print.assert_any_call(
+        mocked_warning.assert_any_call(
             "ERROR CREATING: nonexistent doesn't exist on parent level"
         )
 
 
 def test_draw_directory(directory_manager):
-    expected_output = "foods\n" " grains\n" " fruits\n" " vegetables\n" "  squash\n"
+    expected_output = (
+        "foods\n" " grains\n" " fruits\n" "  fuji\n" " vegetables\n" "  squash\n"
+    )
 
-    with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+    with patch("loguru.logger.info") as mock_info:
         directory_manager._DirectoryManager__draw_directory()
-        assert mock_stdout.getvalue() == expected_output
+        actual_output = "\n".join(call[0][0] for call in mock_info.call_args_list)
+        assert actual_output.strip() == expected_output.strip()
 
 
 def test_show_directory_empty():
     dm = DirectoryManager()
 
-    with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+    with patch("loguru.logger.info") as mock_info:
         dm._show_directory()
-        assert mock_stdout.getvalue().strip() == "LIST\nEMPTY DIRECTORY"
+        actual_output = "\n".join(call[0][0] for call in mock_info.call_args_list)
+        assert actual_output.strip() == "LIST\nEMPTY DIRECTORY"
 
 
 def test_show_directory_non_empty(directory_manager):
     expected_output = (
-        "LIST\n" "foods\n" " grains\n" " fruits\n" " vegetables\n" "  squash\n"
+        "LIST\n"
+        "foods\n"
+        " grains\n"
+        " fruits\n"
+        "  fuji\n"
+        " vegetables\n"
+        "  squash\n"
     )
 
-    with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+    with patch("loguru.logger.info") as mock_info:
         directory_manager._show_directory()
-        assert mock_stdout.getvalue() == expected_output
+        actual_output = "\n".join(call[0][0] for call in mock_info.call_args_list)
+        print(actual_output)
+        assert actual_output.strip() == expected_output.strip()
