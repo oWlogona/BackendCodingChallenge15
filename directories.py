@@ -133,7 +133,6 @@ class DirectoryManager:
         if command == "DELETE":
             self._delete_folder(folder_path=folder_path)
 
-        print('*'*10)
 
     def command_execute(self, command: str):
         self._command_line_parser(command)
@@ -164,9 +163,9 @@ class FileManger:
 commands_list = ["CREATE", "MOVE", "DELETE", "LIST"]
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(description="Process a file.")
-    # parser.add_argument('file_path', type=str, help="Path to the file to process")
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="Process a file.")
+    parser.add_argument('file_path', type=str, help="Path to the file to process")
+    args = parser.parse_args()
 
-    file_manager = FileManger(file_path="inst2.txt")
+    file_manager = FileManger(file_path=args.file_path)
     file_manager.execute()
