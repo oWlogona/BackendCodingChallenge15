@@ -287,6 +287,7 @@ class DirectoryManager:
             This method assumes that the folder to be deleted is identified by its path,
             and it recursively deletes all subfolders within the specified folder.
         """
+        logger.info(f"DELETE {folder_path}")
         folder_path_items = folder_path.strip("/").split("/")
         folder_depth = len(folder_path_items) - 1
         parent_id, status = self._get_parent_folder_id(
